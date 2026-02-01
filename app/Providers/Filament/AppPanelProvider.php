@@ -19,6 +19,8 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AppPanelProvider extends PanelProvider
@@ -27,7 +29,11 @@ class AppPanelProvider extends PanelProvider
     {
         return $panel
             ->id('app')
-            ->path('')
+            ->renderHook(
+                PanelsRenderHook::BODY_START,
+                fn () => view('filament.hooks.impersonation-banner')
+            )
+            ->path('app')
             ->login()
             ->registration()
             ->tenant(TenantBusiness::class, slugAttribute: 'slug')

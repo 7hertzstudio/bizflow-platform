@@ -2,10 +2,11 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
+use App\Models\User;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -18,19 +19,13 @@ class UsersTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('email')
-                    ->label('Email address')
                     ->searchable(),
                 TextColumn::make('roles.name')
-                    ->badge()
-                    ->label('Roles'),
-                TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
+                    ->badge(),
+                TextColumn::make('businesses.name')
+                    ->label('Tenant Business')
+                    ->listWithLineBreaks(),
                 TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -38,11 +33,16 @@ class UsersTable
             ->filters([
                 //
             ])
-            ->recordActions([
-                ViewAction::make(),
+            ->actions([
                 EditAction::make(),
+                Action::make('impersonate')
+                    ->label('Impersonate')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn (User $record) => route('impersonate.start', $record))
+                    ->openUrlInNewTab(false)
+                    ->visible(fn (User $record) => auth()->user()->hasRole('platform_superadmin') && $record->id !== auth()->id()),
             ])
-            ->toolbarActions([
+            ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
