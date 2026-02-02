@@ -11,9 +11,9 @@ use App\Filament\Resources\TenantQuotes\Tables\TenantQuotesTable;
 use App\Models\TenantQuote;
 use BackedEnum;
 use Filament\Infolists\Components\RepeatableEntry;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
@@ -64,8 +64,8 @@ class TenantQuoteResource extends Resource
                             ->schema([
                                 TextEntry::make('description'),
                                 TextEntry::make('qty'),
-                                TextEntry::make('unit_price')->money(fn ($record) => $record->quote->currency),
-                                TextEntry::make('row_total')->money(fn ($record) => $record->quote->currency),
+                                TextEntry::make('unit_price')->money(fn ($record) => $record->quote?->currency ?? 'USD'),
+                                TextEntry::make('row_total')->money(fn ($record) => $record->quote?->currency ?? 'USD'),
                             ])->columns(4),
                     ]),
 
@@ -75,7 +75,7 @@ class TenantQuoteResource extends Resource
                         TextEntry::make('discount_total')->money(fn ($record) => $record->currency)->color('danger'),
                         TextEntry::make('total')->money(fn ($record) => $record->currency)->weight('bold')->size('lg'),
                     ])->columns(3),
-                
+
                 Section::make('Notes')
                     ->schema([
                         TextEntry::make('notes')->markdown(),

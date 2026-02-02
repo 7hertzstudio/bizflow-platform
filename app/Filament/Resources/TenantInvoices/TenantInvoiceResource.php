@@ -66,8 +66,8 @@ class TenantInvoiceResource extends Resource
                             ->schema([
                                 TextEntry::make('description'),
                                 TextEntry::make('qty'),
-                                TextEntry::make('unit_price')->money(fn ($record) => $record->invoice->currency),
-                                TextEntry::make('row_total')->money(fn ($record) => $record->invoice->currency),
+                                TextEntry::make('unit_price')->money(fn ($record) => $record->invoice?->currency ?? 'USD'),
+                                TextEntry::make('row_total')->money(fn ($record) => $record->invoice?->currency ?? 'USD'),
                             ])->columns(4),
                     ]),
 

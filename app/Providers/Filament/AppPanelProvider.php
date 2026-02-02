@@ -3,7 +3,10 @@
 namespace App\Providers\Filament;
 
 use App\Filament\App\Pages\Tenancy\RegisterBusiness;
+use App\Filament\Auth\Login;
+use App\Http\Responses\LoginResponse;
 use App\Models\TenantBusiness;
+use Filament\Auth\Http\Responses\Contracts\LoginResponse as LoginResponseContract;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -23,12 +26,19 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AppPanelProvider extends PanelProvider
 {
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->bind(LoginResponseContract::class, LoginResponse::class);
+    }
+
     public function panel(Panel $panel): Panel
     {
         return $panel
             ->id('app')
             ->path('')
-            ->login()
+            ->login(Login::class)
             ->registration()
             ->tenant(TenantBusiness::class, slugAttribute: 'slug')
             ->tenantRoutePrefix('app')
