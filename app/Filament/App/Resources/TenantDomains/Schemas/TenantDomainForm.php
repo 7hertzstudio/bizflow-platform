@@ -44,7 +44,13 @@ class TenantDomainForm
                         Grid::make(2)->schema([
                             TextInput::make('sell_price')
                                 ->label('Renewal Price')
-                                ->money(fn ($record) => $record?->currency ?? 'USD')
+                                ->numeric()
+                                ->prefix(fn ($record) => match($record?->currency) {
+                                    'PKR' => 'Rs.',
+                                    'EUR' => '€',
+                                    'GBP' => '£',
+                                    default => '$',
+                                })
                                 ->disabled()
                                 ->visible(fn ($record) => $record?->is_managed),
                             Toggle::make('is_managed')

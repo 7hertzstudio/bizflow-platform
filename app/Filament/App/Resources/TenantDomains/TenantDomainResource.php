@@ -18,9 +18,19 @@ class TenantDomainResource extends Resource
 {
     protected static ?string $model = TenantDomain::class;
 
-    protected static ?string $tenantRelationship = 'business';
+    protected static ?string $tenantOwnershipRelationshipName = 'business';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedGlobeAlt;
+
+    public static function getLabel(): string
+    {
+        return 'Domain';
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return 'Domains';
+    }
 
     public static function form(Schema $schema): Schema
     {
