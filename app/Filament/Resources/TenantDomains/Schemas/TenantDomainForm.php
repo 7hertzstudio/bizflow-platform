@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TenantDomains\Schemas;
 
+use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
@@ -43,9 +44,22 @@ class TenantDomainForm
                                 ->default('active'),
                         ]),
                         Grid::make(2)->schema([
-                            DatePicker::make('registered_at'),
+                            DatePicker::make('registered_at')
+                                ->live()
+                                ->afterStateUpdated(function ($state, $set) {
+                                    if ($state) {
+                                        $set('expires_at', Carbon::parse($state)->addYear()->format('Y-m-d'));
+                                    }
+                                }),
                             DatePicker::make('expires_at')
-                                ->required(),
+                                ->required()
+                                ->minDate(fn ($get) => $get('registered_at') 
+                                    ? Carbon::parse($get('registered_at'))->addYear() 
+                                    : now()->addYear()
+                                )
+                                ->validationMessages([
+                                    'min_date' => 'The expiry date must be at least one year after the registration date.',
+                                ]),
                         ]),
                     ]),
 
