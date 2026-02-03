@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TenantDomains\Schemas;
 
+use App\Models\DomainPricing;
 use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\KeyValue;
@@ -12,6 +13,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class TenantDomainForm
 {
@@ -27,7 +29,9 @@ class TenantDomainForm
                                 ->required(),
                             TextInput::make('domain')
                                 ->required()
-                                ->unique(ignoreRecord: true),
+                                ->unique(ignoreRecord: true)
+                                ->live(onBlur: true)
+                                ->afterStateUpdated(fn ($state, $set, $get) => self::updatePricing($state, $set, $get)),
                         ]),
                         Grid::make(2)->schema([
                             TextInput::make('registrar')
@@ -78,6 +82,7 @@ class TenantDomainForm
                                 ->label('Our Cost')
                                 ->numeric()
                                 ->prefix('$')
+                                ->helperText(fn ($get) => $get('pricing_note'))
                                 ->hidden(fn ($get) => !$get('is_managed')),
                             TextInput::make('sell_price')
                                 ->label('Client Price')
@@ -108,5 +113,38 @@ class TenantDomainForm
                             ->rows(3),
                     ])->collapsible()->collapsed(),
             ]);
+    }
+
+    public static function updatePricing($domain, $set, $get): void
+    {
+        if (blank($domain)) {
+            return;
+        }
+
+        $parts = explode('.', $domain);
+        if (count($parts) < 2) return;
+
+        $tld = implode('.', array_slice($parts, 1));
+        
+        $pricing = DomainPricing::where('tld', $tld)->first();
+
+        if (!$pricing && count($parts) > 2) {
+             $tld = implode('.', array_slice($parts, -1)); // just the last part
+             $pricing = DomainPricing::where('tld', $tld)->first();
+        }
+
+        if ($pricing) {
+            $set('currency', $pricing->currency);
+            
+            // Logic: If status is 'active', assume renewal price. If 'pending', maybe registration?
+            // For now, let's default to RENEW price for sell, and RENEW cost for us.
+            // But if it's a new domain purchase, it might be register price.
+            // Since this is "Domain Management" (mostly existing), renewal is safer default.
+            
+            $set('sell_price', $pricing->renew_price);
+            
+            // Use the new cost field from DB, fallback to sell price if not set
+            $set('cost_price', $pricing->renew_cost > 0 ? $pricing->renew_cost : $pricing->renew_price);
+        }
     }
 }

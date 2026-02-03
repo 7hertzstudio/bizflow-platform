@@ -12,8 +12,11 @@ class DomainPricing extends Model
     protected $fillable = [
         'tld',
         'register_price',
+        'register_cost',
         'renew_price',
+        'renew_cost',
         'transfer_price',
+        'transfer_cost',
         'currency',
         'min_years',
         'max_years',
@@ -22,8 +25,11 @@ class DomainPricing extends Model
 
     protected $casts = [
         'register_price' => 'decimal:2',
+        'register_cost' => 'decimal:2',
         'renew_price' => 'decimal:2',
+        'renew_cost' => 'decimal:2',
         'transfer_price' => 'decimal:2',
+        'transfer_cost' => 'decimal:2',
         'is_active' => 'boolean',
     ];
 }

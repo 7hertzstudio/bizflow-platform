@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class TenantBusiness extends Model
 {
-    use HasFactory, HasUlids;
+    use HasFactory, HasUlids, LogsActivity;
 
     protected $fillable = [
         'owner_id',
@@ -22,6 +24,14 @@ class TenantBusiness extends Model
         'country',
         'status',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     public function owner(): BelongsTo
     {

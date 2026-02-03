@@ -43,6 +43,7 @@ class AppPanelProvider extends PanelProvider
             ->tenant(TenantBusiness::class, slugAttribute: 'slug')
             ->tenantRoutePrefix('app')
             ->tenantRegistration(RegisterBusiness::class)
+            ->databaseNotifications()
             ->colors([
                 'primary' => Color::Amber,
             ])
