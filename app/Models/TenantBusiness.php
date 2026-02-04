@@ -59,4 +59,14 @@ class TenantBusiness extends Model
     {
         return $this->hasMany(TenantSubscription::class);
     }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(TenantInvoice::class);
+    }
+
+    public function quotes(): HasMany
+    {
+        return $this->hasMany(TenantQuote::class);
+    }
 }
