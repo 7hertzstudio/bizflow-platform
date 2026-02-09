@@ -32,6 +32,7 @@ class ViewTenantBusiness extends ViewRecord
         return [
             BusinessBanner::class,
             TenantStatsOverview::class,
+            \App\Filament\Resources\TenantDomains\Widgets\DomainStatusOverview::class,
         ];
     }
 

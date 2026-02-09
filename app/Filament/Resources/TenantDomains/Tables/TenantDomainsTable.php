@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class TenantDomainsTable
@@ -44,12 +45,16 @@ class TenantDomainsTable
                     }),
             ])
             ->filters([
-                //
+                SelectFilter::make('business')
+                    ->relationship('business', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->default(request()->query('tenant')),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

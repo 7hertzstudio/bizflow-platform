@@ -5,6 +5,8 @@ namespace App\Filament\Resources\TenantBusinesses\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -42,7 +44,13 @@ class TenantBusinessesTable
                 //
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
+                Action::make('view_domains')
+                    ->label('Domains')
+                    ->icon('heroicon-o-globe-alt')
+                    ->color('info')
+                    ->url(fn ($record) => \App\Filament\Resources\TenantDomains\TenantDomainResource::getUrl('index', ['tenant' => $record->id])),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

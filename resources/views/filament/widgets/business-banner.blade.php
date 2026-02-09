@@ -13,6 +13,18 @@
                 <p class="text-primary-100 opacity-90">
                     Managed by: {{ $record->owner->name }}
                 </p>
+                <div class="mt-4 flex gap-2">
+                    <a href="{{ \App\Filament\Resources\TenantDomains\TenantDomainResource::getUrl('index', ['tenant' => $record->id]) }}" 
+                       class="inline-flex items-center gap-1 rounded-lg bg-white/20 px-3 py-1.5 text-xs font-medium text-white hover:bg-white/30 transition backdrop-blur-md border border-white/30">
+                        <x-heroicon-m-globe-alt class="h-4 w-4" />
+                        Manage Domains
+                    </a>
+                    <a href="{{ \App\Filament\Resources\TenantDomains\TenantDomainResource::getUrl('create', ['tenant' => $record->id]) }}" 
+                       class="inline-flex items-center gap-1 rounded-lg bg-white/20 px-3 py-1.5 text-xs font-medium text-white hover:bg-white/30 transition backdrop-blur-md border border-white/30">
+                        <x-heroicon-m-plus class="h-4 w-4" />
+                        Add Domain
+                    </a>
+                </div>
             </div>
         </div>
 

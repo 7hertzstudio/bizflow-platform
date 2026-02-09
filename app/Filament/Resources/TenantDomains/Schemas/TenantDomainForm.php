@@ -26,7 +26,10 @@ class TenantDomainForm
                         Grid::make(2)->schema([
                             Select::make('tenant_business_id')
                                 ->relationship('business', 'name')
-                                ->required(),
+                                ->required()
+                                ->default(request()->query('tenant'))
+                                ->disabled(fn () => request()->has('tenant'))
+                                ->dehydrated(),
                             TextInput::make('domain')
                                 ->required()
                                 ->unique(ignoreRecord: true)
