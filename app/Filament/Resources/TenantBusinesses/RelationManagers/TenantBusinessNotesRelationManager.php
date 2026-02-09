@@ -51,7 +51,7 @@ class TenantBusinessNotesRelationManager extends RelationManager
         ])->headerActions([
             Tables\Actions\CreateAction::make(),
         ])->actions([
-            Tables\ActionsditAction::make(),
+            Tables\Actions\EditAction::make(),
             Tables\Actions\DeleteAction::make(),
         ]);
     }
