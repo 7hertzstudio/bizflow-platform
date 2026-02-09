@@ -17,30 +17,22 @@ class TenantStatsOverview extends StatsOverviewWidget
     protected function getStats(): array
     {
         return [
-            Grid::make(4)->schema(
-                [
-                    Stat::make('Active Domains', $this->record->domains()->count())
-                        ->description('Registered Domain')
-                        ->descriptionIcon('heroicon-m-globe-alt')
-                        ->color('primary'),
-                    Stat::make('Active Projects', 2)
-                        ->description('Active Projects')
-                        ->url('#')
-                        ->color('primary')
-                        ->descriptionIcon('heroicon-c-wrench-screwdriver'),
-                    Stat::make('Active Subscriptions', $this->record->subscriptions()->where('status', 'active')->count())
-                        ->description('Recurring services')
-                        ->color('warning'),
-
-                ]
-            )->columnSpan('full'),
-
+            Stat::make('Active Domains', $this->record->domains()->count())
+                ->description('Registered Domain')
+                ->descriptionIcon('heroicon-m-globe-alt')
+                ->color('primary'),
+            Stat::make('Active Projects', 2)
+                ->description('Active Projects')
+                ->url('#')
+                ->color('primary')
+                ->descriptionIcon('heroicon-c-wrench-screwdriver'),
+            Stat::make('Active Subscriptions', $this->record->subscriptions()->where('status', 'active')->count())
+                ->description('Recurring services')
+                ->color('warning'),
 
 //            Stat::make('Total Invoiced', 'PKR ' . number_format($this->record->invoices()->sum('total_amount') / 100, 2))
 //                ->description('Lifetime value')
 //                ->color('success'),
-
-
         ];
     }
 }

@@ -41,7 +41,8 @@ class TenantBusinessResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\TenantDomainsRelationManager::class,
+            RelationManagers\TenantSubscriptionsRelationManager::class,
         ];
     }
 
