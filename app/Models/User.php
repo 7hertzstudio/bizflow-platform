@@ -10,6 +10,7 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -27,6 +28,7 @@ class User extends Authenticatable implements FilamentUser, HasTenants
      * @var list<string>
      */
     protected $fillable = [
+        'brand_id',
         'name',
         'email',
         'password',
@@ -53,6 +55,13 @@ class User extends Authenticatable implements FilamentUser, HasTenants
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Relationships
+
+    public function brand(): BelongsTo
+    {
+        return $this->belongsTo(Brand::class);
     }
 
     // Filament Tenancy Methods
@@ -94,7 +103,6 @@ class User extends Authenticatable implements FilamentUser, HasTenants
             }
 
             // Otherwise, must have a Tenant Role or be in the process of registration
-            // Note: Registration pages bypass this check automatically by Filament
             return $this->hasAnyRole(TenantRole::cases()) || $this->businesses()->exists(); 
         }
 

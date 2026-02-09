@@ -17,11 +17,11 @@ class TenantBusiness extends Model
     use HasFactory, HasUlids, LogsActivity;
 
     protected $fillable = [
+        'brand_id',
         'owner_id',
         'name',
         'slug',
         'billing_currency',
-        'country',
         'status',
     ];
 
@@ -31,6 +31,11 @@ class TenantBusiness extends Model
             ->logAll()
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
+    }
+
+    public function brand(): BelongsTo
+    {
+        return $this->belongsTo(Brand::class);
     }
 
     public function owner(): BelongsTo
@@ -45,9 +50,14 @@ class TenantBusiness extends Model
             ->withTimestamps();
     }
 
-    public function settings(): HasOne
+    public function addresses(): HasMany
     {
-        return $this->hasOne(TenantBusinessSetting::class);
+        return $this->hasMany(TenantBusinessAddress::class);
+    }
+
+    public function notes(): HasMany
+    {
+        return $this->hasMany(TenantBusinessNote::class);
     }
 
     public function domains(): HasMany
@@ -68,5 +78,25 @@ class TenantBusiness extends Model
     public function quotes(): HasMany
     {
         return $this->hasMany(TenantQuote::class);
+    }
+
+    public function contracts(): HasMany
+    {
+        return $this->hasMany(TenantContract::class);
+    }
+
+    public function projects(): HasMany
+    {
+        return $this->hasMany(TenantProject::class);
+    }
+
+    public function credentials(): HasMany
+    {
+        return $this->hasMany(TenantCredential::class);
+    }
+
+    public function scheduledReports(): HasMany
+    {
+        return $this->hasMany(TenantScheduledReport::class);
     }
 }

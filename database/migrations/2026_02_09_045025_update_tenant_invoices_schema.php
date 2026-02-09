@@ -18,39 +18,45 @@ return new class extends Migration
             $table->ulid('reference_id')->nullable()->after('invoice_number');
             $table->string('reference_type')->nullable()->after('reference_id');
             
-            // Totals to BigInteger
-            $table->bigInteger('subtotal')->default(0)->change();
-            $table->bigInteger('discount_total')->default(0)->change();
-            $table->bigInteger('tax_total')->default(0)->change();
-            $table->bigInteger('total')->default(0)->change();
             $table->bigInteger('amount_paid')->default(0)->after('total');
             
             // Date handling
             $table->date('issue_date')->nullable()->after('status');
             $table->string('pdf_path')->nullable()->after('paid_at');
             
-            // Remove old decimal columns from previous migration if they conflict or redundant
+            // Remove old decimal columns
             $table->dropColumn(['rounding_adjustment', 'exchange_rate']);
+        });
+
+        // Separate closure for type changes to avoid column existence issues during complex alters
+        Schema::table('tenant_invoices', function (Blueprint $table) {
+            $table->bigInteger('subtotal')->default(0)->change();
+            $table->bigInteger('discount_total')->default(0)->change();
+            $table->bigInteger('tax_total')->default(0)->change();
+            $table->bigInteger('total')->default(0)->change();
         });
 
         Schema::table('tenant_invoice_items', function (Blueprint $table) {
              // Rename FK
-            $table->dropForeign(['tenant_plan_id']);
+            $table->dropForeign('tenant_invoice_items_tenant_plan_id_foreign');
             $table->renameColumn('tenant_plan_id', 'product_plan_id');
             
-            // Pricing to BigInteger
-            $table->bigInteger('unit_price')->default(0)->change();
-            $table->bigInteger('row_total')->default(0)->change();
             $table->renameColumn('row_total', 'total_price');
 
-            // Remove complex discount logic columns from original migration to keep it clean (Cents handles math now)
+            // Remove complex discount logic columns
             $table->dropColumn(['use_master_discount', 'custom_discount_type', 'custom_discount_value']);
+            
+            $table->integer('quantity')->default(1)->after('description');
+            $table->dropColumn(['qty']);
+        });
+
+        Schema::table('tenant_invoice_items', function (Blueprint $table) {
+            $table->bigInteger('unit_price')->default(0)->change();
+            $table->bigInteger('total_price')->default(0)->change();
         });
 
         Schema::table('tenant_invoice_items', function (Blueprint $table) {
             $table->foreign('product_plan_id')->references('id')->on('product_plans')->onDelete('set null');
-            $table->integer('quantity')->default(1)->after('description');
-            $table->dropColumn(['qty']);
         });
     }
 

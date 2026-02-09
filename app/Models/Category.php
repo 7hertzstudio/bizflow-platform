@@ -8,24 +8,23 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class TenantPlan extends Model
+class Category extends Model
 {
     use HasFactory, HasUlids;
 
     protected $fillable = [
         'brand_id',
+        'parent_id',
         'name',
-        'category',
-        'base_price',
-        'base_currency',
-        'is_custom',
-        'features',
-        'status',
+        'slug',
+        'description',
+        'icon',
+        'order',
+        'is_active',
     ];
 
     protected $casts = [
-        'features' => 'array',
-        'is_custom' => 'boolean',
+        'is_active' => 'boolean',
     ];
 
     public function brand(): BelongsTo
@@ -33,8 +32,18 @@ class TenantPlan extends Model
         return $this->belongsTo(Brand::class);
     }
 
-    public function subscriptions(): HasMany
+    public function parent(): BelongsTo
     {
-        return $this->hasMany(TenantSubscription::class);
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
     }
 }

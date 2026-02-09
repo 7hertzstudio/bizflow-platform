@@ -16,60 +16,62 @@ class ProductPlanForm
     {
         return $schema
             ->components([
-                Section::make('Plan Basics')
+                Section::make('Plan Details')
                     ->schema([
                         Grid::make(2)->schema([
-                            Select::make('brand_id')
-                                ->relationship('brand', 'name')
-                                ->required(),
+                            Select::make('product_id')
+                                ->relationship('product', 'name')
+                                ->required()
+                                ->searchable(),
                             TextInput::make('name')
                                 ->required(),
                         ]),
-                        Grid::make(2)->schema([
-                            Select::make('category')
-                                ->options([
-                                    'hosting' => 'Web Hosting',
-                                    'pos' => 'POS System',
-                                    'development' => 'Software Development',
-                                    'bundle' => 'Service Bundle',
-                                    'marketing' => 'Marketing Services',
-                                ])
-                                ->required(),
-                            Select::make('status')
-                                ->options([
-                                    'draft' => 'Draft',
-                                    'published' => 'Published',
-                                    'archived' => 'Archived',
-                                ])
-                                ->required()
-                                ->default('published'),
-                        ]),
+                        Select::make('status')
+                            ->options([
+                                'draft' => 'Draft',
+                                'published' => 'Published',
+                                'archived' => 'Archived',
+                            ])
+                            ->required()
+                            ->default('published'),
                     ]),
 
-                Section::make('Pricing')
+                Section::make('Pricing (Cents)')
+                    ->description('All prices should be entered in cents (e.g., 5000 for $50.00).')
                     ->schema([
                         Grid::make(2)->schema([
-                            TextInput::make('base_price')
-                                ->required()
+                            TextInput::make('price_monthly')
+                                ->label('Monthly Price')
+                                ->numeric()
+                                ->default(0),
+                            TextInput::make('compare_at_price_monthly')
+                                ->label('Monthly Compare At (Strikethrough)')
                                 ->numeric(),
-                            Select::make('base_currency')
-                                ->options([
-                                    'USD' => 'US Dollar (USD)',
-                                    'PKR' => 'Pakistani Rupee (PKR)',
-                                ])
-                                ->required()
-                                ->default('USD'),
                         ]),
+                        Grid::make(2)->schema([
+                            TextInput::make('price_yearly')
+                                ->label('Yearly Price (Total)')
+                                ->numeric()
+                                ->default(0),
+                            TextInput::make('compare_at_price_yearly')
+                                ->label('Yearly Compare At (Total)')
+                                ->numeric(),
+                        ]),
+                        Select::make('currency')
+                            ->options([
+                                'USD' => 'USD',
+                                'PKR' => 'PKR',
+                            ])
+                            ->required()
+                            ->default('USD'),
                         Toggle::make('is_custom')
-                            ->label('Bespoke/Custom Plan')
-                            ->helperText('Custom plans are hidden from public signup and used for specific clients.'),
+                            ->label('Custom Deal')
+                            ->default(false),
                     ]),
 
                 Section::make('Features')
                     ->schema([
                         KeyValue::make('features')
-                            ->keyLabel('Feature Name')
-                            ->valueLabel('Value/Description')
                             ->reorderable(),
                     ])->collapsible(),
             ]);

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->foreignUlid('brand_id')->constrained('brands')->onDelete('cascade');
-            $table->foreignUlid('parent_id')->nullable()->constrained('categories')->onDelete('set null');
+            $table->ulid('parent_id')->nullable();
             $table->string('name');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
@@ -27,13 +27,21 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->foreignUlid('brand_id')->constrained('brands')->onDelete('cascade');
-            $table->foreignUlid('category_id')->nullable()->constrained('categories')->onDelete('set null');
+            $table->ulid('category_id')->nullable();
             $table->string('name');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->string('image_url')->nullable();
             $table->string('status')->default('active'); // active, archived
             $table->timestamps();
+        });
+
+        Schema::table('categories', function (Blueprint $table) {
+            $table->foreign('parent_id')->references('id')->on('categories')->onDelete('set null');
+        });
+
+        Schema::table('products', function (Blueprint $table) {
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
         });
     }
 

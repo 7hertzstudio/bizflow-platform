@@ -11,7 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Tenant Quotes
+        // Drop dependent FKs first
+        if (Schema::hasTable('tenant_invoices')) {
+            Schema::table('tenant_invoices', function (Blueprint $table) {
+                // Check if the constraint exists before trying to drop it
+                // In previous legacy migration it was created as $table->foreignUlid('quote_id')->nullable()->constrained('tenant_quotes')->onDelete('set null');
+                // The name would be tenant_invoices_quote_id_foreign
+                $table->dropForeign('tenant_invoices_quote_id_foreign');
+                $table->dropColumn(['quote_id']);
+            });
+        }
+
+        // Drop existing if they exist from previous legacy migrations
+        Schema::dropIfExists('tenant_quote_items');
+        Schema::dropIfExists('tenant_quotes');
+
+        // Re-create Tenant Quotes
         Schema::create('tenant_quotes', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->foreignUlid('brand_id')->constrained('brands')->onDelete('cascade');
@@ -30,6 +45,23 @@ return new class extends Migration
             $table->string('status')->default('draft'); // draft, sent, accepted, rejected, expired
             $table->date('valid_until')->nullable();
             $table->timestamps();
+        });
+
+        // Re-create items table for quotes
+        Schema::create('tenant_quote_items', function (Blueprint $table) {
+            $table->ulid('id')->primary();
+            $table->foreignUlid('tenant_quote_id')->constrained('tenant_quotes')->onDelete('cascade');
+            $table->foreignUlid('product_plan_id')->nullable()->constrained('product_plans')->onDelete('set null');
+            $table->string('description');
+            $table->integer('quantity')->default(1);
+            $table->bigInteger('unit_price');
+            $table->bigInteger('total_price');
+            $table->timestamps();
+        });
+
+        // Add quote_id back to tenant_invoices with new reference
+        Schema::table('tenant_invoices', function (Blueprint $table) {
+            $table->foreignUlid('tenant_quote_id')->nullable()->after('invoice_number')->constrained('tenant_quotes')->onDelete('set null');
         });
 
         // Tenant Contracts
@@ -78,6 +110,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('tenant_projects');
         Schema::dropIfExists('tenant_contracts');
+        Schema::dropIfExists('tenant_quote_items');
         Schema::dropIfExists('tenant_quotes');
     }
 };
