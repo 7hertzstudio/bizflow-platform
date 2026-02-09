@@ -23,9 +23,9 @@ class TenantInvoiceResource extends Resource
 {
     protected static ?string $model = TenantInvoice::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentCurrencyDollar;
+    protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedDocumentCurrencyDollar;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Finance';
+    protected static UnitEnum|string|null $navigationGroup = 'Finance';
 
     public static function form(Schema $schema): Schema
     {

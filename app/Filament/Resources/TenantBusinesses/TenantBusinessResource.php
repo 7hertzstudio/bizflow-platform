@@ -24,9 +24,9 @@ class TenantBusinessResource extends Resource
 {
     protected static ?string $model = TenantBusiness::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice;
+    protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedBuildingOffice;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Tenancy';
+    protected static UnitEnum|string|null $navigationGroup = 'Tenancy';
 
     public static function form(Schema $schema): Schema
     {
@@ -43,6 +43,8 @@ class TenantBusinessResource extends Resource
         return [
             RelationManagers\TenantDomainsRelationManager::class,
             RelationManagers\TenantSubscriptionsRelationManager::class,
+            RelationManagers\TenantBusinessAddressesRelationManager::class,
+            RelationManagers\TenantBusinessNotesRelationManager::class,
         ];
     }
 

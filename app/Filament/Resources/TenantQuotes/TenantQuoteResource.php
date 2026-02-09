@@ -23,9 +23,9 @@ class TenantQuoteResource extends Resource
 {
     protected static ?string $model = TenantQuote::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
+    protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Finance';
+    protected static UnitEnum|string|null $navigationGroup = 'Finance';
 
     public static function form(Schema $schema): Schema
     {

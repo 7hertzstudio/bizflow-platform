@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\TenantPlans\Schemas;
+namespace App\Filament\Resources\ProductPlans\Schemas;
 
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
@@ -10,7 +10,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
-class TenantPlanForm
+class ProductPlanForm
 {
     public static function configure(Schema $schema): Schema
     {

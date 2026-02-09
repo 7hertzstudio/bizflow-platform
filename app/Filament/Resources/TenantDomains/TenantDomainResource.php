@@ -19,9 +19,9 @@ class TenantDomainResource extends Resource
 {
     protected static ?string $model = TenantDomain::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedGlobeAlt;
+    protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedGlobeAlt;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Infrastructure';
+    protected static UnitEnum|string|null $navigationGroup = 'Infrastructure';
 
     public static function form(Schema $schema): Schema
     {

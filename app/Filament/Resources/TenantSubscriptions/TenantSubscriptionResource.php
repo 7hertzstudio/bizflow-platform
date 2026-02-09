@@ -19,9 +19,9 @@ class TenantSubscriptionResource extends Resource
 {
     protected static ?string $model = TenantSubscription::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCreditCard;
+    protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedCreditCard;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Tenancy';
+    protected static UnitEnum|string|null $navigationGroup = 'Tenancy';
 
     public static function form(Schema $schema): Schema
     {

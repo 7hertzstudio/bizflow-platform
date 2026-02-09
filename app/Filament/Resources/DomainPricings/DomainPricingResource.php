@@ -19,9 +19,9 @@ class DomainPricingResource extends Resource
 {
     protected static ?string $model = DomainPricing::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
+    protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedTag;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Infrastructure';
+    protected static UnitEnum|string|null $navigationGroup = 'Infrastructure';
 
     public static function form(Schema $schema): Schema
     {

@@ -19,9 +19,9 @@ class CurrencyRateResource extends Resource
 {
     protected static ?string $model = CurrencyRate::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCurrencyDollar;
+    protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedCurrencyDollar;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Billing';
+    protected static UnitEnum|string|null $navigationGroup = 'Billing';
 
     public static function form(Schema $schema): Schema
     {

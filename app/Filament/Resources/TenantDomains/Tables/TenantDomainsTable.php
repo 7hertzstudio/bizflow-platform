@@ -16,7 +16,7 @@ class TenantDomainsTable
     {
         return $table
             ->columns([
-                TextColumn::make('domain')
+                TextColumn::make('domain_name')
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
@@ -25,11 +25,11 @@ class TenantDomainsTable
                     ->searchable(),
                 TextColumn::make('registrar')
                     ->badge(),
-                TextColumn::make('expires_at')
+                TextColumn::make('expiry_date')
                     ->date()
                     ->sortable()
                     ->color(fn ($record) => $record->expires_at && $record->expires_at->isPast() ? 'danger' : ($record->expires_at && $record->expires_at->diffInDays(now()) < 30 ? 'warning' : 'success')),
-                IconColumn::make('is_managed')
+                IconColumn::make('is_managed_by_us')
                     ->label('Managed')
                     ->boolean(),
                 IconColumn::make('auto_renew')

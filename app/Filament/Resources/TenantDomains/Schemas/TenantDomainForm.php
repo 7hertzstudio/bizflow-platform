@@ -30,7 +30,7 @@ class TenantDomainForm
                                 ->default(request()->query('tenant'))
                                 ->disabled(fn () => request()->has('tenant'))
                                 ->dehydrated(),
-                            TextInput::make('domain')
+                            TextInput::make('domain_name')
                                 ->required()
                                 ->unique(ignoreRecord: true)
                                 ->live(onBlur: true)
@@ -51,14 +51,14 @@ class TenantDomainForm
                                 ->default('active'),
                         ]),
                         Grid::make(2)->schema([
-                            DatePicker::make('registered_at')
+                            DatePicker::make('registration_date')
                                 ->live()
                                 ->afterStateUpdated(function ($state, $set) {
                                     if ($state) {
                                         $set('expires_at', Carbon::parse($state)->addYear()->format('Y-m-d'));
                                     }
                                 }),
-                            DatePicker::make('expires_at')
+                            DatePicker::make('expiry_date')
                                 ->required()
                                 ->minDate(fn ($get) => $get('registered_at') 
                                     ? Carbon::parse($get('registered_at'))->addYear() 
@@ -73,7 +73,7 @@ class TenantDomainForm
                 Section::make('Management & Billing')
                     ->schema([
                         Grid::make(2)->schema([
-                            Toggle::make('is_managed')
+                            Toggle::make('is_managed_by_us')
                                 ->label('Managed by Agency')
                                 ->helperText('We pay for renewal and bill the client.')
                                 ->live(),
